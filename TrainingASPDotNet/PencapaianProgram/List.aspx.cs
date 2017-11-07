@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -11,6 +14,23 @@ namespace TrainingASPDotNet.PencapaianProgram
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            BindProgram();
+        }
+        protected void BindProgram()
+        {
+            const string sql = @"SELECT * FROM PencapaianProgram";
+
+            // get connection from web-config
+            var connection = ConfigurationManager.ConnectionStrings["Database"].ToString();
+
+            using (var c = new SqlConnection(connection))
+
+            {
+                var data = c.Query<Entities.PencapaianProgram>(sql);
+                ProgramRepeater.DataSource = data;
+                ProgramRepeater.DataBind();
+
+            }
 
         }
     }
